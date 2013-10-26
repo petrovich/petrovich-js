@@ -1,0 +1,32 @@
+{
+  "name": "petrovich",
+  "version": "0.1.0",
+  "description": "The official JavaScript port of Petrovich.",
+  "license": "MIT",
+  "authors": [
+    "Ilia Schelokov <thaumant@gmail.com> (https://github.com/thaumant)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/petrovich/petrovich-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/petrovich/petrovich-js/issues"
+  },
+  "keywords": [
+    "inflection",
+    "russian",
+    "language",
+    "names"
+  ],
+  "main": "dist/petrovich.js",
+  "scripts": {
+    "test": "jasmine spec/"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-contrib-concat": "~0.3.0",
+    "js-yaml": "~2.1.3"
+  }
+}
