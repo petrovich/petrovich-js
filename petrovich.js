@@ -152,4 +152,7 @@
         return name;
     }
 
+
+    var rules = null; // grunt: replace rules
+
 })();
