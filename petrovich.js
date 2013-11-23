@@ -10,7 +10,7 @@
     };
 
     // Auxiliary function, used by validate() and find_rule_local()
-    function contains(x, arr) {
+    function contains(arr, x) {
         for (var i in arr) { if (arr[i] === x) return true; }
         return false;
     }
@@ -24,14 +24,23 @@
             throw new Error('Invalid case: ' + gcase);
     }
 
-    // First use method:
+    // First use means:
     // var person = { gender: 'female', first: 'Маша' };
     // petrovich(person, 'dative');
     var petrovich = function(person, gcase) {
         validate(person.gender, gcase);
+        var result = { gender: person.gender };
+        for (var i in predef.nametypes) {
+            var nametype = predef.nametypes[i];
+            if (person[nametype] !== null) {
+                result[nametype] =
+                    inflect(person.gender, person[nametype], gcase, nametype+'name');
+            }
+        }
+        return result;
     };
 
-    // Second use method:
+    // Second use means:
     // Build dynamically methods chain like petrovich.male.first.dative(name)
     // Isolate scope to reduce polluting scope with temp variables
     (function() {
@@ -57,8 +66,8 @@
     })();
 
     // Export for NodeJS or browser
-    if (module && module.exports) module.exports = kuzmich;
-    else if (window) window.kuzmich = kuzmich;
+    if (module && module.exports) module.exports = petrovich;
+    else if (window) window.petrovich = petrovich;
 
 
 
@@ -140,7 +149,7 @@
         } else throw new Error('Unknown grammatic case: ' + gcase);
         
         for (var i in mod) {
-            var chr = ;
+            var chr = mod[i];
             switch (chr) {
                 case '.': break;
                 case '-':
