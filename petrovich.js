@@ -31,6 +31,7 @@
     // petrovich(person, 'dative');
     var petrovich = function(person, gcase) {
         var result = {};
+        // gender detection
         if (person.gender != null) {
             result.gender = person.gender;
         } else if (person.middle != null) {
@@ -41,6 +42,7 @@
             throw new Error('You must provide gender or middle name');
         }
         validate(result.gender, gcase);
+        // look over possible names of properties, inflect them and add to result object
         for (var i in predef.nametypes) {
             var nametype = predef.nametypes[i];
             if (person[nametype+'name'] != null) {
@@ -160,14 +162,14 @@
     function apply_rule(name, gcase, rule) {
         var mod;
         if (gcase === 'nominative') mod = '.';
-        else if (contains(predef.cases, gcase)) {
+        else {
             for (var i in predef.cases) {
                 if (gcase === predef.cases[i]) {
                     mod = rule.mods[i-1];
                     break;
                 }
             }
-        } else throw new Error('Unknown grammatic case: ' + gcase);
+        }
         
         for (var i in mod) {
             var chr = mod[i];
