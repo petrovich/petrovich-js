@@ -5,10 +5,6 @@ module.exports = function(grunt) {
 
 		pkg: grunt.file.readJSON('package.json'),
 
-		rulesMinified: function() {
-			return grunt.file.read('dist/rules.json');
-		},
-
 		uglify: {
 			options: {
 				compress: true
@@ -25,7 +21,7 @@ module.exports = function(grunt) {
 				dest: 'dist/petrovich.js',
 				replacements: [{
 					from: 'null; // grunt: replace rules',
-					to: "<%= rulesMinified %>"
+					to: '\n' + grunt.file.read('rules.json') + ';'
 				}]
 			}
 		}
@@ -36,18 +32,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-text-replace');
 
 	grunt.registerTask(
-		'minify:rules',
-		'Minify rules.json',
-		function() {
-	        var rules = JSON.stringify(grunt.file.readJSON('rules.json'));
-	        grunt.file.write('dist/rules.json', rules);
-		}
-	);
-
-	grunt.registerTask(
 		'build',
 		'Build distributive',
-		['minify:rules', 'replace:rules', 'uglify:petrovich']
+		['replace:rules', 'uglify:petrovich']
 	);
 
 };
