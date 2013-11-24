@@ -4,7 +4,7 @@
   "description": "The official JavaScript port of Petrovich.",
   "license": "MIT",
   "authors": [
-    "Ilia Schelokov <thaumant@gmail.com> (https://github.com/thaumant)"
+    "Eli Schelokov <thaumant@gmail.com> (https://github.com/thaumant)"
   ],
   "repository": {
     "type": "git",
