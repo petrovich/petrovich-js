@@ -90,4 +90,18 @@ describe('Petrovich', function() {
 
     });
 
+
+    describe('gender detection', function() {
+
+        it('is represented as petrovich.detect_gender method', function() {
+            expect(p.detect_gender('Иванович')).toBe('male');
+            expect(p.detect_gender('Ильинична')).toBe('female');
+            expect(p.detect_gender('Блаблабла')).toBe('androgynous');
+        });
+
+        xit('allows to omit gender property if middle name is provided', function() {
+
+        });
+    });
+
 });

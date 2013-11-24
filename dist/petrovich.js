@@ -45,6 +45,13 @@
         return result;
     };
 
+    petrovich.detect_gender = function(middle) {
+        var ending = middle.toLowerCase().substr(middle.length - 2);
+        if (ending === 'ич') return 'male';
+        else if (ending === 'на') return 'female';
+        else return 'androgynous';
+    };
+
     // Second use means:
     // Build dynamically methods chain like petrovich.male.first.dative(name)
     // Isolate scope to reduce polluting scope with temp variables
