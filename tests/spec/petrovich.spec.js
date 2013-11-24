@@ -99,8 +99,12 @@ describe('Petrovich', function() {
             expect(p.detect_gender('Блаблабла')).toBe('androgynous');
         });
 
-        xit('allows to omit gender property if middle name is provided', function() {
+        it('allows to omit gender property if middle name is provided', function() {
+            expect(p({first: 'Александр', middle: 'Сергеевич'}, 'dative'))
+                .toEqual({gender: 'male', first: 'Александру', middle: 'Сергеевичу'});
 
+            expect(p({first: 'Анна', middle: 'Андреевна'}, 'dative'))
+                .toEqual({gender: 'female', first: 'Анне', middle: 'Андреевне'});
         });
     });
 
