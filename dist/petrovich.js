@@ -5,7 +5,7 @@
     // Predefined values
     var predef = {
         genders: ['male', 'female', 'androgynous'],
-        nametypes: ['first', 'last', 'middle'],
+        nametypes: ['first', 'middle', 'last'],
         cases: ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'prepositional']
     };
 
@@ -57,7 +57,7 @@
                     petrovich[gender][nametype][gcase] =
                         (function(gender, nametype, gcase){
                             return function(name) {
-                                inflect(gender, name, gcase, nametype+'name');
+                                return inflect(gender, name, gcase, nametype+'name');
                             };
                         })(gender, nametype, gcase);
                 }
@@ -126,8 +126,8 @@
             for (var k in rule.test) {
                 var sample = rule.test[k];
                 var test = match_whole_word ? name :
-                    name.substr(name.length - sample.length);
-                if (test === sample) return true;
+                           name.substr(name.length - sample.length);
+                if (test === sample) return rule;
             }
         }
         return false;
