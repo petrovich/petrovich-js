@@ -21,7 +21,7 @@
   ],
   "main": "dist/petrovich.js",
   "scripts": {
-    "test": "jasmine tests/spec/"
+    "test": "jasmine-node tests/spec/"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

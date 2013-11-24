@@ -26,13 +26,18 @@
 
     // First use means:
     // var person = { gender: 'female', first: 'Маша' };
+    // OR
+    // var person = { gender: 'female', firstname: 'Маша' };
     // petrovich(person, 'dative');
     var petrovich = function(person, gcase) {
         validate(person.gender, gcase);
         var result = { gender: person.gender };
         for (var i in predef.nametypes) {
             var nametype = predef.nametypes[i];
-            if (person[nametype] !== null) {
+            if (person[nametype+'name'] != null) {
+                result[nametype] =
+                    inflect(person.gender, person[nametype+'name'], gcase, nametype+'name');
+            } else if (person[nametype] != null) {
                 result[nametype] =
                     inflect(person.gender, person[nametype], gcase, nametype+'name');
             }
