@@ -1,0 +1,24 @@
+{
+  "name": "petrovich",
+  "version": "0.1.0",
+  "homepage": "https://github.com/petrovich/petrovich-js",
+  "authors": [
+    "Eli Schelokov <thaumant@gmail.com>"
+  ],
+  "description": "The official JavaScript port of Petrovich",
+  "main": "dist/petrovich.min.js",
+  "keywords": [
+    "inflection",
+    "russian",
+    "language",
+    "names"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
