@@ -1,7 +1,7 @@
 {
   "name": "petrovich",
   "version": "0.1.0",
-  "description": "The official JavaScript port of Petrovich.",
+  "description": "JS library to inflect Russian first, middle and last names",
   "license": "MIT",
   "authors": [
     "Eli Schelokov <thaumant@gmail.com> (https://github.com/thaumant)"

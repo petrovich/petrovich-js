@@ -9,19 +9,10 @@
         cases: ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'prepositional']
     };
 
-    // Auxiliary function, used by validate() and find_rule_local()
+    // Auxiliary function: no Array.indexOf owing to IE8
     function contains(arr, x) {
         for (var i in arr) { if (arr[i] === x) return true; }
         return false;
-    }
-
-    // Validates that gender and case are members of predef
-    // No Array.indexOf owing to IE8
-    function validate(gender, gcase) {
-        if (!contains(predef.genders, gender))
-            throw new Error('Invalid gender: ' + gender);
-        if (!contains(predef.cases, gcase))
-            throw new Error('Invalid case: ' + gcase);
     }
 
     // First use means:
@@ -33,15 +24,18 @@
         var result = {};
         // gender detection
         if (person.gender != null) {
+            if (!contains(predef.genders, person.gender))
+                throw new Error('Invalid gender: ' + person.gender);
             result.gender = person.gender;
         } else if (person.middle != null) {
             result.gender = petrovich.detect_gender(person.middle);
         } else if (person.middlename != null) {
             result.gender = petrovich.detect_gender(person.middlename);
         } else {
-            throw new Error('You must provide gender or middle name');
+            throw new Error('Unknown gender');
         }
-        validate(result.gender, gcase);
+        if (!contains(predef.cases, gcase))
+            throw new Error('Invalid case: ' + gcase);
         // look over possible names of properties, inflect them and add to result object
         for (var i in predef.nametypes) {
             var nametype = predef.nametypes[i];

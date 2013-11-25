@@ -5,7 +5,7 @@
   "authors": [
     "Eli Schelokov <thaumant@gmail.com>"
   ],
-  "description": "The official JavaScript port of Petrovich",
+  "description": "JS library to inflect Russian first, middle and last names",
   "main": "dist/petrovich.min.js",
   "keywords": [
     "inflection",
