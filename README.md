@@ -50,17 +50,6 @@ var person = {
 petrovich(person, 'dative');
 // вернет копию объекта:
 // {gender: 'male', first: 'Петру', last: 'Чайковскому'}
-
-// Также можно использовать длинные аналоги параметров:
-// firstname, lastname и middlename
-var person = {
- gender: 'male',
- firstname: 'Петр',
- lastname: 'Чайковский'
-};
-petrovich(person, 'dative');
-// вернет:
-// {gender: 'male', firstname: 'Петру', lastname: 'Чайковскому'}
 ```
 
 Если указано отчество, можно опустить пол, он определится **автоматически**:
@@ -108,12 +97,12 @@ petrovich.detect_gender('Блаблабла') // вернет 'androgynous'
 - middle - отчество.
 
 Падежи:
-- nominative - именительный
-- genitive - родительный
-- dative - дательный
-- accusative - винительный
-- instrumental - творительный
-- prepositional - предложный
+- nominative - именительный (кто? что?)
+- genitive - родительный (кого? чего?)
+- dative - дательный (кому? чему?)
+- accusative - винительный (кого? что?)
+- instrumental - творительный (кем? чем?)
+- prepositional - предложный (о ком? о чем?)
  
 
 ## Разработчику ##

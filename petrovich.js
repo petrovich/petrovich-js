@@ -29,8 +29,6 @@
             result.gender = person.gender;
         } else if (person.middle != null) {
             result.gender = petrovich.detect_gender(person.middle);
-        } else if (person.middlename != null) {
-            result.gender = petrovich.detect_gender(person.middlename);
         } else {
             throw new Error('Unknown gender');
         }
@@ -39,10 +37,7 @@
         // look over possible names of properties, inflect them and add to result object
         for (var i in predef.nametypes) {
             var nametype = predef.nametypes[i];
-            if (person[nametype+'name'] != null) {
-                result[nametype] =
-                    inflect(result.gender, person[nametype+'name'], gcase, nametype+'name');
-            } else if (person[nametype] != null) {
+            if (person[nametype] != null) {
                 result[nametype] =
                     inflect(result.gender, person[nametype], gcase, nametype+'name');
             }
@@ -81,6 +76,8 @@
             }
         }
     })();
+
+
 
     // Export for NodeJS or browser
     if (module && module.exports) module.exports = petrovich;
