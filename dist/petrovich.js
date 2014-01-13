@@ -9,44 +9,33 @@
         cases: ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'prepositional']
     };
 
-    // Auxiliary function, used by validate() and find_rule_local()
+    // Auxiliary function: no Array.indexOf owing to IE8
     function contains(arr, x) {
         for (var i in arr) { if (arr[i] === x) return true; }
         return false;
     }
 
-    // Validates that gender and case are members of predef
-    // No Array.indexOf owing to IE8
-    function validate(gender, gcase) {
-        if (!contains(predef.genders, gender))
-            throw new Error('Invalid gender: ' + gender);
-        if (!contains(predef.cases, gcase))
-            throw new Error('Invalid case: ' + gcase);
-    }
-
     // First use means:
     // var person = { gender: 'female', first: 'Маша' };
-    // OR
-    // var person = { gender: 'female', firstname: 'Маша' };
     // petrovich(person, 'dative');
     var petrovich = function(person, gcase) {
         var result = {};
+        // gender detection
         if (person.gender != null) {
+            if (!contains(predef.genders, person.gender))
+                throw new Error('Invalid gender: ' + person.gender);
             result.gender = person.gender;
         } else if (person.middle != null) {
             result.gender = petrovich.detect_gender(person.middle);
-        } else if (person.middlename != null) {
-            result.gender = petrovich.detect_gender(person.middlename);
         } else {
-            throw new Error('You must provide gender or middle name');
+            throw new Error('Unknown gender');
         }
-        validate(result.gender, gcase);
+        if (!contains(predef.cases, gcase))
+            throw new Error('Invalid case: ' + gcase);
+        // look over possible names of properties, inflect them and add to result object
         for (var i in predef.nametypes) {
             var nametype = predef.nametypes[i];
-            if (person[nametype+'name'] != null) {
-                result[nametype] =
-                    inflect(result.gender, person[nametype+'name'], gcase, nametype+'name');
-            } else if (person[nametype] != null) {
+            if (person[nametype] != null) {
                 result[nametype] =
                     inflect(result.gender, person[nametype], gcase, nametype+'name');
             }
@@ -85,6 +74,8 @@
             }
         }
     })();
+
+
 
     // Export for NodeJS or browser
     if (module && module.exports) module.exports = petrovich;
@@ -160,14 +151,14 @@
     function apply_rule(name, gcase, rule) {
         var mod;
         if (gcase === 'nominative') mod = '.';
-        else if (contains(predef.cases, gcase)) {
+        else {
             for (var i in predef.cases) {
                 if (gcase === predef.cases[i]) {
                     mod = rule.mods[i-1];
                     break;
                 }
             }
-        } else throw new Error('Unknown grammatic case: ' + gcase);
+        }
         
         for (var i in mod) {
             var chr = mod[i];
@@ -358,6 +349,9 @@
       {
         "gender": "female",
         "test": [
+          "цкая",
+          "ская",
+          "ная",
           "ая"
         ],
         "mods": [
@@ -371,14 +365,14 @@
       {
         "gender": "female",
         "test": [
-          "ская"
+          "яя"
         ],
         "mods": [
-          "--ой",
-          "--ой",
-          "--ую",
-          "--ой",
-          "--ой"
+          "--ей",
+          "--ей",
+          "--юю",
+          "--ей",
+          "--ей"
         ]
       },
       {
@@ -547,19 +541,6 @@
       {
         "gender": "androgynous",
         "test": [
-          "ца"
-        ],
-        "mods": [
-          "-и",
-          "-е",
-          "-у",
-          "-ей",
-          "-е"
-        ]
-      },
-      {
-        "gender": "androgynous",
-        "test": [
           "а"
         ],
         "mods": [
@@ -681,8 +662,20 @@
       {
         "gender": "male",
         "test": [
-          "гой",
           "кой"
+        ],
+        "mods": [
+          "-го",
+          "-му",
+          "-го",
+          "--им",
+          "-м"
+        ]
+      },
+      {
+        "gender": "male",
+        "test": [
+          "гой"
         ],
         "mods": [
           "-го",
@@ -738,8 +731,20 @@
       {
         "gender": "male",
         "test": [
-          "кий",
           "ый"
+        ],
+        "mods": [
+          "--ого",
+          "--ому",
+          "--ого",
+          "-м",
+          "--ом"
+        ]
+      },
+      {
+        "gender": "male",
+        "test": [
+          "кий"
         ],
         "mods": [
           "--ого",
@@ -1088,6 +1093,19 @@
       {
         "gender": "female",
         "test": [
+          "а"
+        ],
+        "mods": [
+          "-ы",
+          "-е",
+          "-у",
+          "-ой",
+          "-е"
+        ]
+      },
+      {
+        "gender": "female",
+        "test": [
           "я"
         ],
         "mods": [
@@ -1166,6 +1184,21 @@
           "ом",
           "е"
         ]
+      },
+      {
+        "gender": "androgynous",
+        "test": [
+          "ния",
+          "рия",
+          "вия"
+        ],
+        "mods": [
+          "-и",
+          "-и",
+          "-ю",
+          "-ем",
+          "-ем"
+        ]
       }
     ]
   },
@@ -1199,6 +1232,7 @@
       }
     ]
   }
-};
+}
+;
 
 })();
