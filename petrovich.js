@@ -17,8 +17,6 @@
 
     // First use means:
     // var person = { gender: 'female', first: 'Маша' };
-    // OR
-    // var person = { gender: 'female', firstname: 'Маша' };
     // petrovich(person, 'dative');
     var petrovich = function(person, gcase) {
         var result = {};

@@ -1,6 +1,6 @@
 {
   "name": "petrovich",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JS library to inflect Russian first, middle and last names",
   "license": "MIT",
   "authors": [
