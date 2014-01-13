@@ -42,26 +42,17 @@ describe('Petrovich', function() {
         it('takes an person-object with gender and first name as "first" or "firstname" property', function() {
             expect(p({gender: 'male', first: 'Александр'}, 'dative'))
                 .toEqual({gender: 'male', first: 'Александру'});
-
-            expect(p({gender: 'male', firstname: 'Александр'}, 'dative'))
-                .toEqual({gender: 'male', first: 'Александру'});
         });
 
         
         it('takes an person-object with gender and middle name as "middle" or "middlename" property', function() {
             expect(p({gender: 'male', middle: 'Сергеевич'}, 'dative'))
                 .toEqual({gender: 'male', middle: 'Сергеевичу'});
-
-            expect(p({gender: 'male', middlename: 'Сергеевич'}, 'dative'))
-                .toEqual({gender: 'male', middle: 'Сергеевичу'});
         });
 
         
         it('takes an person-object with gender and last name as "last" or "lastname" property', function() {
             expect(p({gender: 'male', last: 'Пушкин'}, 'dative'))
-                .toEqual({gender: 'male', last: 'Пушкину'});
-
-            expect(p({gender: 'male', lastname: 'Пушкин'}, 'dative'))
                 .toEqual({gender: 'male', last: 'Пушкину'});
         });
 
