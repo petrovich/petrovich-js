@@ -78,8 +78,9 @@
 
 
     // Export for NodeJS or browser
-    if (module && module.exports) module.exports = petrovich;
+    if (typeof module !== "undefined" && module.exports) module.exports = petrovich;
     else if (window) window.petrovich = petrovich;
+    else throw new Error("Unknown environment");
 
 
 
@@ -1119,6 +1120,32 @@
       {
         "gender": "male",
         "test": [
+          "ия"
+        ],
+        "mods": [
+          "-и",
+          "-и",
+          "-ю",
+          "-ей",
+          "-и"
+        ]
+      },
+      {
+        "gender": "male",
+        "test": [
+          "я"
+        ],
+        "mods": [
+          "-и",
+          "-е",
+          "-ю",
+          "-ей",
+          "-е"
+        ]
+      },
+      {
+        "gender": "male",
+        "test": [
           "ей"
         ],
         "mods": [
@@ -1232,7 +1259,6 @@
       }
     ]
   }
-}
-;
+};
 
 })();

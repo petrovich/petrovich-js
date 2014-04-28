@@ -99,4 +99,16 @@ describe('Petrovich', function() {
         });
     });
 
+
+    describe('some individual rules', function() {
+
+        it('should be working as expected', function() {
+            expect(p({first: 'Илья', middle: 'Васильевич'}, 'dative'))
+                .toEqual({gender: 'male', first: 'Илье', middle: 'Васильевичу'});
+            expect(p({first: 'Добрыня', middle: 'Никитич'}, 'genitive'))
+                .toEqual({gender: 'male', first: 'Добрыни', middle: 'Никитича'});
+        });
+
+    });
+
 });
