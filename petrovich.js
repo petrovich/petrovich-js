@@ -78,8 +78,9 @@
 
 
     // Export for NodeJS or browser
-    if (module && module.exports) module.exports = petrovich;
+    if (typeof module !== "undefined" && module.exports) module.exports = petrovich;
     else if (window) window.petrovich = petrovich;
+    else throw new Error("Unknown environment");
 
 
 
