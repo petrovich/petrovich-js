@@ -161,7 +161,7 @@
             }
         }
         
-        for (var i in mod) {
+        for (var i = 0; i < mod.length; i++) {
             var chr = mod[i];
             switch (chr) {
                 case '.': break;
