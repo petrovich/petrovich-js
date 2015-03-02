@@ -78,7 +78,13 @@ describe('Petrovich', function() {
             expect(p({gender: 'male', last: 'Пушкин'}, 'dative'))
                 .not.toBe({gender: 'male', last: 'Пушкину'});
         });
+        
+        it('составные фамилии', function() {
+            expect(p({gender: 'female', last: 'Сидорова-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Сидоровой-Петровой', first: 'Маше', middle: 'Ивановне'});
 
+            expect(p({gender: 'female', last: 'Тер-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Тер-Петровой', first: 'Маше', middle: 'Ивановне'});
     });
 
 
