@@ -107,8 +107,20 @@ describe('Petrovich', function() {
                 .toEqual({gender: 'male', first: 'Илье', middle: 'Васильевичу'});
             expect(p({first: 'Добрыня', middle: 'Никитич'}, 'genitive'))
                 .toEqual({gender: 'male', first: 'Добрыни', middle: 'Никитича'});
+            expect(p({gender: 'male', last: 'Кваша'}, 'genitive'))
+                .toEqual({gender: 'male', last: 'Кваши'});
         });
 
+    });
+
+    describe('complex names', function() {
+
+        it('should be working as expected', function() {
+            expect(p({gender: 'female', last: 'Сидорова-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Сидоровой-Петровой', first: 'Маше', middle: 'Ивановне'});
+            expect(p({gender: 'female', last: 'Тер-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Тер-Петровой', first: 'Маше', middle: 'Ивановне'});
+        });
     });
 
 });
