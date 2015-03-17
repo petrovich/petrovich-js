@@ -93,10 +93,10 @@
             for (var k in parts) {
                 var part = parts[k],
                     first_word = k === 0 && parts.size > 1,
-                    rule = find_rule_global(gender, name,
+                    rule = find_rule_global(gender, part,
                         nametype_rulesets, {first_word: first_word});
-                if (rule) result.push(apply_rule(name, gcase, rule));
-                else result.push(name);
+                if (rule) result.push(apply_rule(part, gcase, rule));
+                else result.push(part);
             }
             return result.join('-');
     }
@@ -529,7 +529,8 @@
           "ха",
           "ча",
           "ща",
-          "жа"
+          "жа",
+          "ша"
         ],
         "mods": [
           "-и",
