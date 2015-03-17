@@ -111,4 +111,16 @@ describe('Petrovich', function() {
 
     });
 
+
+    describe('complex names', function() {
+
+        it('inflects each part individually', function() {
+            expect(p({gender: 'female', last: 'Сидорова-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Сидоровой-Петровой', first: 'Маше', middle: 'Ивановне'});
+            expect(p({gender: 'female', last: 'Тер-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
+                .toEqual({gender: 'female', last: 'Тер-Петровой', first: 'Маше', middle: 'Ивановне'});
+        });
+    });
+    
+
 });
