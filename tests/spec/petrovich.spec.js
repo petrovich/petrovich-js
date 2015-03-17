@@ -107,6 +107,8 @@ describe('Petrovich', function() {
                 .toEqual({gender: 'male', first: 'Илье', middle: 'Васильевичу'});
             expect(p({first: 'Добрыня', middle: 'Никитич'}, 'genitive'))
                 .toEqual({gender: 'male', first: 'Добрыни', middle: 'Никитича'});
+            expect(p({gender: 'male', last: 'Кваша'}, 'genitive'))
+                .toEqual({gender: 'male', last: 'Кваши'});
         });
 
     });
