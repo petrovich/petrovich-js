@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
 		uglify: {
 			options: {
-				compress: true
+				compress: {}
 			},
 			petrovich: {
 				src: 'dist/petrovich.js',
