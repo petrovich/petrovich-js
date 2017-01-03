@@ -22,7 +22,10 @@ module.exports = function(grunt) {
 				replacements: [{
 					from: 'null; // grunt: replace rules',
 					to: '\n' + grunt.file.read('rules.json') + ';'
-				}]
+				}, {
+                    from: 'null; // grunt: replace gender_rules',
+                    to: '\n' + grunt.file.read('gender.json') + ';'
+                }]
 			}
 		}
 

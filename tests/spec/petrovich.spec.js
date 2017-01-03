@@ -84,10 +84,26 @@ describe('Petrovich', function() {
 
     describe('gender detection', function() {
 
-        it('is represented as petrovich.detect_gender method', function() {
+        it('is represented as petrovich.detect_gender method for middlename', function() {
             expect(p.detect_gender('Иванович')).toBe('male');
             expect(p.detect_gender('Ильинична')).toBe('female');
             expect(p.detect_gender('Блаблабла')).toBe('androgynous');
+        });
+
+        it('is represented as petrovich.detect_gender method for object', function() {
+            expect(p.detect_gender({first:'Александр'})).toBe('male');
+            expect(p.detect_gender({last:'Склифасовский'})).toBe('male');
+            expect(p.detect_gender({first:'Александра'})).toBe('female');
+            expect(p.detect_gender({last:'Склифасовская'})).toBe('female');
+            expect(p.detect_gender({first:'Саша'})).toBe('androgynous');
+            expect(p.detect_gender({first:'Саша',last:'Андрейчук'})).toBe('androgynous');
+            expect(p.detect_gender({first:'Саша',last:'Иванов'})).toBe('male');
+            expect(p.detect_gender({first:'Саша',last:'Андрейчук',middle:'Олегович'})).toBe('male');
+            expect(p.detect_gender({first:'Саша',middle:'Олегович'})).toBe('male');
+            expect(p.detect_gender({first:'Саша',middle:'Олеговна'})).toBe('female');
+            expect(p.detect_gender({last:'Осипчук'})).toBe('androgynous');
+            expect(p.detect_gender({middle:'Олегович'})).toBe('male');
+            expect(p.detect_gender({middle:'Олеговна'})).toBe('female');
         });
 
         it('allows to omit gender property if middle name is provided', function() {
@@ -96,6 +112,10 @@ describe('Petrovich', function() {
 
             expect(p({first: 'Анна', middle: 'Андреевна'}, 'dative'))
                 .toEqual({gender: 'female', first: 'Анне', middle: 'Андреевне'});
+
+            expect(function () {
+                p({first: 'Саша', last: 'Андрейчук'}, 'dative');
+            }).toThrow(new Error('Unknown gender'))
         });
     });
 

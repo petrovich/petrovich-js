@@ -27,10 +27,10 @@
             if (!contains(predef.genders, person.gender))
                 throw new Error('Invalid gender: ' + person.gender);
             result.gender = person.gender;
-        } else if (person.middle != null) {
-            result.gender = petrovich.detect_gender(person.middle);
         } else {
-            throw new Error('Unknown gender');
+            result.gender = petrovich.detect_gender(person);
+            if(!result.gender || result.gender == 'androgynous')
+                throw new Error('Unknown gender');
         }
         if (!contains(predef.cases, gcase))
             throw new Error('Invalid case: ' + gcase);
@@ -45,11 +45,28 @@
         return result;
     };
 
-    petrovich.detect_gender = function (middle) {
-        var ending = middle.toLowerCase().substr(middle.length - 2);
-        if (ending === 'ич') return 'male';
-        else if (ending === 'на') return 'female';
-        else return 'androgynous';
+    petrovich.detect_gender = function (fio) {
+        if (typeof(fio) === 'string') {
+            fio = {
+                first: undefined,
+                last: undefined,
+                middle: fio
+            };
+        }
+
+        var middle_result = find_gender_global(fio.middle, gender_rules.middlename);
+        if (middle_result != 'androgynous')
+            return middle_result;
+
+        var other_parts = ['last', 'first'].map(function (item) {
+            return find_gender_global(fio[item], gender_rules[item + 'name'])
+        }).filter(function (item) {
+            return item != 'androgynous'
+        });
+
+        if (other_parts.length == 0 || (other_parts.length == 2 && other_parts[0] != other_parts[1]))
+            return 'androgynous'
+        return other_parts[0];
     };
 
     // Second use means:
@@ -79,7 +96,6 @@
             }
         }
     })();
-
 
     // Export for NodeJS or browser
     if (typeof module !== "undefined" && module.exports) module.exports = petrovich;
@@ -117,8 +133,14 @@
         }
         return find_rule_local(
             gender, name, nametype_rulesets.suffixes, false, tags);
-    };
+    }
 
+    //Matches word for rule sample
+    function match_sample(match_whole_word, name, sample) {
+        var test = match_whole_word ? name :
+            name.substr(name.length - sample.length);
+        return test === sample;
+    }
 
     // Local search in rulesets of exceptions or suffixes
     function find_rule_local(gender, name, ruleset, match_whole_word, tags) {
@@ -137,15 +159,38 @@
 
             name = name.toLowerCase();
             for (var j = 0; j < rule.test.length; j++) {
-                var sample = rule.test[j];
-                var test = match_whole_word ? name :
-                    name.substr(name.length - sample.length);
-                if (test === sample) return rule;
+                if (match_sample(match_whole_word, name, rule.test[j]))  return rule;
             }
         }
         return false;
     }
 
+    //finds gender for name part
+    function find_gender_global(name, ruleset) {
+        if (!name)
+            return 'androgynous'
+        if (ruleset.exceptions) {
+            var gender = find_gender_local(
+                name, ruleset.exceptions, true);
+            if (gender) return gender;
+        }
+        return find_gender_local(
+                name, ruleset.suffixes, false) || 'androgynous';
+    }
+
+    //finds gender for name part for exceptions or suffixes
+    function find_gender_local(name, rules, match_whole_word) {
+        var res = Object.keys(rules).filter(function (gender, index) {
+            var array = rules[gender];
+            return array.some(function (sample) {
+                return match_sample(match_whole_word, name, sample);
+            })
+        });
+        if (res.length != 1)
+            return null;
+        else
+            return res[0];
+    }
 
     // Apply found rule to given name
     // Move error throwing from this function to API method
@@ -179,5 +224,6 @@
 
 
     var rules = null; // grunt: replace rules
-
+    var gender_rules_from_lson = null; // grunt: replace gender_rules
+    var gender_rules = gender_rules_from_lson.gender;
 })();

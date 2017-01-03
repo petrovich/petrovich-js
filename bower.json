@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "homepage": "https://github.com/petrovich/petrovich-js",
   "authors": [
-    "Eli Schelokov <thaumant@gmail.com>"
+    "Eli Schelokov <thaumant@gmail.com>",
+    "Andrey Ivanov"
   ],
   "description": "JS library to inflect Russian first, middle and last names",
   "main": "dist/petrovich.min.js",

@@ -27,10 +27,10 @@
             if (!contains(predef.genders, person.gender))
                 throw new Error('Invalid gender: ' + person.gender);
             result.gender = person.gender;
-        } else if (person.middle != null) {
-            result.gender = petrovich.detect_gender(person.middle);
         } else {
-            throw new Error('Unknown gender');
+            result.gender = petrovich.detect_gender(person);
+            if(!result.gender || result.gender == 'androgynous')
+                throw new Error('Unknown gender');
         }
         if (!contains(predef.cases, gcase))
             throw new Error('Invalid case: ' + gcase);
@@ -45,11 +45,28 @@
         return result;
     };
 
-    petrovich.detect_gender = function (middle) {
-        var ending = middle.toLowerCase().substr(middle.length - 2);
-        if (ending === 'ич') return 'male';
-        else if (ending === 'на') return 'female';
-        else return 'androgynous';
+    petrovich.detect_gender = function (fio) {
+        if (typeof(fio) === 'string') {
+            fio = {
+                first: undefined,
+                last: undefined,
+                middle: fio
+            };
+        }
+
+        var middle_result = find_gender_global(fio.middle, gender_rules.middlename);
+        if (middle_result != 'androgynous')
+            return middle_result;
+
+        var other_parts = ['last', 'first'].map(function (item) {
+            return find_gender_global(fio[item], gender_rules[item + 'name'])
+        }).filter(function (item) {
+            return item != 'androgynous'
+        });
+
+        if (other_parts.length == 0 || (other_parts.length == 2 && other_parts[0] != other_parts[1]))
+            return 'androgynous'
+        return other_parts[0];
     };
 
     // Second use means:
@@ -79,7 +96,6 @@
             }
         }
     })();
-
 
     // Export for NodeJS or browser
     if (typeof module !== "undefined" && module.exports) module.exports = petrovich;
@@ -117,8 +133,14 @@
         }
         return find_rule_local(
             gender, name, nametype_rulesets.suffixes, false, tags);
-    };
+    }
 
+    //Matches word for rule sample
+    function match_sample(match_whole_word, name, sample) {
+        var test = match_whole_word ? name :
+            name.substr(name.length - sample.length);
+        return test === sample;
+    }
 
     // Local search in rulesets of exceptions or suffixes
     function find_rule_local(gender, name, ruleset, match_whole_word, tags) {
@@ -137,15 +159,38 @@
 
             name = name.toLowerCase();
             for (var j = 0; j < rule.test.length; j++) {
-                var sample = rule.test[j];
-                var test = match_whole_word ? name :
-                    name.substr(name.length - sample.length);
-                if (test === sample) return rule;
+                if (match_sample(match_whole_word, name, rule.test[j]))  return rule;
             }
         }
         return false;
     }
 
+    //finds gender for name part
+    function find_gender_global(name, ruleset) {
+        if (!name)
+            return 'androgynous'
+        if (ruleset.exceptions) {
+            var gender = find_gender_local(
+                name, ruleset.exceptions, true);
+            if (gender) return gender;
+        }
+        return find_gender_local(
+                name, ruleset.suffixes, false) || 'androgynous';
+    }
+
+    //finds gender for name part for exceptions or suffixes
+    function find_gender_local(name, rules, match_whole_word) {
+        var res = Object.keys(rules).filter(function (gender, index) {
+            var array = rules[gender];
+            return array.some(function (sample) {
+                return match_sample(match_whole_word, name, sample);
+            })
+        });
+        if (res.length != 1)
+            return null;
+        else
+            return res[0];
+    }
 
     // Apply found rule to given name
     // Move error throwing from this function to API method
@@ -1301,5 +1346,508 @@
     ]
   }
 };
-
+    var gender_rules_from_lson = 
+{
+  "gender": {
+    "lastname": {
+      "exceptions": {
+        "androgynous": [
+          "бова",
+          "регин",
+          "дарвин",
+          "пэйлин",
+          "грин",
+          "цин",
+          "шенгелая"
+        ]
+      },
+      "suffixes": {
+        "female": [
+          "ова",
+          "ая",
+          "ына",
+          "ина",
+          "ева",
+          "ска",
+          "ёва"
+        ],
+        "male": [
+          "кий",
+          "ов",
+          "ын",
+          "ев",
+          "ин",
+          "ёв",
+          "хий",
+          "ний",
+          "ый",
+          "ой"
+        ]
+      }
+    },
+    "firstname": {
+      "exceptions": {
+        "androgynous": [
+          "сева",
+          "иона",
+          "муса",
+          "саша",
+          "алвард",
+          "валери",
+          "кири",
+          "анри",
+          "ким",
+          "райхон",
+          "закия",
+          "захария",
+          "женя"
+        ],
+        "male": [
+          "абиба",
+          "савва",
+          "лёва",
+          "вова",
+          "ага",
+          "ахмедага",
+          "алиага",
+          "амирага",
+          "агга",
+          "серега",
+          "фейга",
+          "гога",
+          "алиада",
+          "муктада",
+          "абида",
+          "алда",
+          "маджуда",
+          "нурлыхуда",
+          "гиа",
+          "элиа",
+          "гарсиа",
+          "вавила",
+          "гавриила",
+          "генка",
+          "лука",
+          "дима",
+          "зосима",
+          "тима",
+          "фима",
+          "фома",
+          "кузьма",
+          "жора",
+          "миша",
+          "ермила",
+          "данила",
+          "гаврила",
+          "абдалла",
+          "аталла",
+          "абдилла",
+          "атилла",
+          "кайролла",
+          "абулла",
+          "абула",
+          "свитлана",
+          "бена",
+          "гена",
+          "агелина",
+          "джанна",
+          "кришна",
+          "степа",
+          "дра",
+          "назера",
+          "валера",
+          "эстера",
+          "двойра",
+          "калистра",
+          "заратустра",
+          "юра",
+          "иса",
+          "аиса",
+          "халиса",
+          "холиса",
+          "валенса",
+          "мусса",
+          "ата",
+          "паата",
+          "алета",
+          "никита",
+          "мота",
+          "шота",
+          "фаста",
+          "коста",
+          "маритта",
+          "малюта",
+          "васюта",
+          "вафа",
+          "мустафа",
+          "ганифа",
+          "лев",
+          "яков",
+          "шелли",
+          "константин",
+          "марсель",
+          "рамиль",
+          "эмиль",
+          "бактыгуль",
+          "даниэль",
+          "игорь",
+          "арминэ",
+          "изя",
+          "кузя",
+          "гия",
+          "мазия",
+          "кирикия",
+          "ркия",
+          "еркия",
+          "эркия",
+          "гулия",
+          "аксания",
+          "закария",
+          "зекерия",
+          "гарсия",
+          "шендля",
+          "филя",
+          "вилля",
+          "толя",
+          "ваня",
+          "саня",
+          "загиря",
+          "боря",
+          "цайся",
+          "вася",
+          "ося",
+          "петя",
+          "витя",
+          "митя",
+          "костя",
+          "алья",
+          "илья",
+          "ларья"
+        ],
+        "female": [
+          "судаба",
+          "сураба",
+          "любава",
+          "джанлука",
+          "варвара",
+          "наташа",
+          "зайнаб",
+          "любов",
+          "сольвейг",
+          "шакед",
+          "аннаид",
+          "ингрид",
+          "синди",
+          "аллаберди",
+          "сандали",
+          "лали",
+          "натали",
+          "гулькай",
+          "алтынай",
+          "гюнай",
+          "гюльчитай",
+          "нурангиз",
+          "лиз",
+          "элиз",
+          "ботагоз",
+          "юлдуз",
+          "диляфруз",
+          "габи",
+          "сажи",
+          "фанни",
+          "мери",
+          "элдари",
+          "эльдари",
+          "хилари",
+          "хиллари",
+          "аннемари",
+          "розмари",
+          "товсари",
+          "ансари",
+          "одри",
+          "тери",
+          "ири",
+          "катри",
+          "мэри",
+          "сатаней",
+          "ефтений",
+          "верунчик",
+          "гюзел",
+          "этел",
+          "рэйчел",
+          "джил",
+          "мерил",
+          "нинелл",
+          "бурул",
+          "ахлам",
+          "майрам",
+          "махаррам",
+          "мириам",
+          "дилярам",
+          "асем",
+          "мерьем",
+          "мирьем",
+          "эркаим",
+          "гулаим",
+          "айгерим",
+          "марьям",
+          "мирьям",
+          "эван",
+          "гульжиган",
+          "айдан",
+          "айжан",
+          "вивиан",
+          "гульжиан",
+          "лилиан",
+          "мариан",
+          "саиман",
+          "джоан",
+          "чулпан",
+          "лоран",
+          "моран",
+          "джохан",
+          "гульшан",
+          "аделин",
+          "жаклин",
+          "карин",
+          "каролин",
+          "каталин",
+          "катрин",
+          "керстин",
+          "кэтрин",
+          "мэрилин",
+          "рузалин",
+          "хелин",
+          "цеткин",
+          "ширин",
+          "элисон",
+          "дурсун",
+          "кристин",
+          "гульжиян",
+          "марьян",
+          "ренато",
+          "зейнеп",
+          "санабар",
+          "дильбар",
+          "гулизар",
+          "гульзар",
+          "пилар",
+          "дагмар",
+          "элинар",
+          "нилуфар",
+          "анхар",
+          "гаухар",
+          "естер",
+          "эстер",
+          "дженнифер",
+          "линор",
+          "элинор",
+          "элеонор",
+          "айнур",
+          "гульнур",
+          "шамсинур",
+          "элнур",
+          "ильсияр",
+          "нигяр",
+          "сигитас",
+          "агнес",
+          "анес",
+          "долорес",
+          "инес",
+          "анаис",
+          "таис",
+          "эллис",
+          "элис",
+          "кларис",
+          "амнерис",
+          "айрис",
+          "дорис",
+          "беатрис",
+          "грейс",
+          "грэйс",
+          "ботагос",
+          "маргос",
+          "джулианс",
+          "арус",
+          "диляфрус",
+          "саодат",
+          "зулхижат",
+          "хамат",
+          "патимат",
+          "хатимат",
+          "альжанат",
+          "маймунат",
+          "гульшат",
+          "биргит",
+          "рут",
+          "иргаш",
+          "айнаш",
+          "агнеш",
+          "зауреш",
+          "тэрбиш",
+          "ануш",
+          "азгануш",
+          "гаруш",
+          "николь",
+          "адась",
+          "афиля",
+          "тафиля",
+          "фаня",
+          "аня"
+        ]
+      },
+      "suffixes": {
+        "androgynous": [
+          "улла"
+        ],
+        "male": [
+          "аба",
+          "б",
+          "ав",
+          "ев",
+          "ов",
+          "г",
+          "д",
+          "ж",
+          "з",
+          "би",
+          "ди",
+          "жи",
+          "али",
+          "ри",
+          "ай",
+          "ей",
+          "ий",
+          "ой",
+          "ый",
+          "к",
+          "л",
+          "ам",
+          "ем",
+          "им",
+          "ом",
+          "ум",
+          "ым",
+          "ям",
+          "ан",
+          "бен",
+          "вен",
+          "ген",
+          "ден",
+          "ин",
+          "сейн",
+          "он",
+          "ун",
+          "ян",
+          "ио",
+          "ло",
+          "ро",
+          "то",
+          "шо",
+          "п",
+          "ар",
+          "др",
+          "ер",
+          "ир",
+          "ор",
+          "тр",
+          "ур",
+          "ыр",
+          "яр",
+          "ас",
+          "ес",
+          "ис",
+          "йс",
+          "кс",
+          "мс",
+          "ос",
+          "нс",
+          "рс",
+          "ус",
+          "юс",
+          "яс",
+          "ат",
+          "мет",
+          "кт",
+          "нт",
+          "рт",
+          "ст",
+          "ут",
+          "ф",
+          "х",
+          "ш",
+          "ы",
+          "сь",
+          "емеля",
+          "коля"
+        ],
+        "female": [
+          "иба",
+          "люба",
+          "лава",
+          "ева",
+          "га",
+          "да",
+          "еа",
+          "иза",
+          "иа",
+          "ика",
+          "нка",
+          "ска",
+          "ела",
+          "ила",
+          "лла",
+          "эла",
+          "има",
+          "на",
+          "ра",
+          "са",
+          "та",
+          "фа",
+          "елли",
+          "еса",
+          "сса",
+          "гуль",
+          "нуэль",
+          "гюль",
+          "нэ",
+          "ая",
+          "ея",
+          "ия",
+          "йя",
+          "ля",
+          "мя",
+          "оя",
+          "ря",
+          "ся",
+          "вья",
+          "лья",
+          "мья",
+          "нья",
+          "рья",
+          "сья",
+          "тья",
+          "фья",
+          "зя"
+        ]
+      }
+    },
+    "middlename": {
+      "suffixes": {
+        "female": [
+          "на",
+          "кызы",
+          "гызы"
+        ],
+        "male": [
+          "ич",
+          "оглы",
+          "улы",
+          "уулу"
+        ]
+      }
+    }
+  }
+};
+    var gender_rules = gender_rules_from_lson.gender;
 })();
