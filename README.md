@@ -23,7 +23,7 @@ bower install petrovich
 В браузере:
 
 ```html
-<script type="text/javascript" src="/path/to/petrovich/dist/petrovich.min.js"></script>
+<script src="/path/to/petrovich/dist/petrovich.min.js"></script>
 ```
 
 В NodeJS:
