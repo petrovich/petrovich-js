@@ -4,7 +4,8 @@
   "description": "JS library to inflect Russian first, middle and last names",
   "license": "MIT",
   "authors": [
-    "Eli Schelokov <thaumant@gmail.com> (https://github.com/thaumant)"
+    "Eli Schelokov <thaumant@gmail.com> (https://github.com/thaumant)",
+    "Andrey Ivanov"
   ],
   "repository": {
     "type": "git",
