@@ -121,6 +121,8 @@ describe('Petrovich', function() {
                 .toEqual({gender: 'female', last: 'Сидоровой-Петровой', first: 'Маше', middle: 'Ивановне'});
             expect(p({gender: 'female', last: 'Тер-Петрова', first: 'Маша', middle: 'Ивановна'}, 'dative'))
                 .toEqual({gender: 'female', last: 'Тер-Петровой', first: 'Маше', middle: 'Ивановне'});
+            expect(p({gender: 'male', last: 'Тер-Петров', first: 'Миша', middle: 'Иванович'}, 'dative'))
+                .toEqual({gender: 'male', last: 'Тер-Петрову', first: 'Мише', middle: 'Ивановичу'});
         });
     });
     
