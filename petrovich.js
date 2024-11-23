@@ -9,6 +9,11 @@
         cases: ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'prepositional']
     };
 
+    function isEmpty(arr) {
+        return arr.length === 0;
+    }
+
+    
     // Auxiliary function: no Array.indexOf owing to IE8
     function contains(arr, x) {
         for (var i = 0; i < arr.length; i++) {
@@ -93,7 +98,7 @@
             parts = name.split('-'),
             result = [];
         for (var i = 0; i < parts.length; i++) {
-            var part = parts[i], first_word = i === 0 && parts.size > 1,
+            var part = parts[i], first_word = i === 0 && parts.length > 1,
                 rule = find_rule_global(gender, part,
                     nametype_rulesets, {first_word: first_word});
             if (rule) result.push(apply_rule(part, gcase, rule));
@@ -124,13 +129,15 @@
     function find_rule_local(gender, name, ruleset, match_whole_word, tags) {
         for (var i = 0; i < ruleset.length; i++) {
             var rule = ruleset[i];
-            if (rule.tags) {
+            if (rule.tags && ! isEmpty(rule.tags)) {
+                if (isEmpty(tags)) continue;
+                
                 var common_tags = [];
                 for (var j = 0; j < rule.tags.length; j++) {
                     var tag = rule.tags[j];
-                    if (!contains(tags, tag)) common_tags.push(tag);
+                    if (contains(tags, tag)) common_tags.push(tag);
                 }
-                if (!common_tags.length) continue;
+                if (isEmpty(common_tags)) continue;
             }
             if (rule.gender !== 'androgynous' && gender !== rule.gender)
                 continue;
